@@ -4,6 +4,7 @@ from psycopg2.extras import DictCursor
 from datetime import datetime
 from config import DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
 
+
 class Database:
     def __init__(self):
         self.conn = None
