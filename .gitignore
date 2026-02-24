@@ -1,0 +1,43 @@
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# --- Virtual Env ---
+venv/
+ENV/
+env/
+.venv/
+
+# --- Environment Variables ---
+.env
+.env.local
+.env.*.local
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Logs & DB ---
+*.log
+logs/
+*.sqlite3
+*.db
+
+# --- Build & Dist ---
+build/
+dist/
+*.egg-info/
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
