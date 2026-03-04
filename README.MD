@@ -1,3 +1,12 @@
-# tg bot по группировки сообщений
-## Задача:
-Принимать сообщения от пользователя и сохранять их в базу данных пакетам.
+# Задачи и их контроль
+
+## Stack
+
+FastAPi
+[Swagger](http://localhost:8000/docs)
+
+генерация токена
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```

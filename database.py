@@ -2,7 +2,7 @@ import logging
 import psycopg2
 from psycopg2.extras import DictCursor
 from datetime import datetime
-from config import DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
+from config import DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS
 
 
 class Database:
@@ -17,7 +17,7 @@ class Database:
                 port=DB_PORT,
                 database=DB_NAME,
                 user=DB_USER,
-                password=DB_PASSWORD
+                password=DB_PASS
             )
             self.conn.autocommit = True
             logging.info("✅ Подключение к БД успешно")
@@ -53,6 +53,7 @@ class Database:
                     (telegram_id, username)
                 )
                 return cur.fetchone()[0]
+
         return self.execute_with_retry(_get_user)
 
     def create_package(self, user_id: int) -> int:
@@ -63,23 +64,28 @@ class Database:
                     (user_id,)
                 )
                 return cur.fetchone()[0]
+
         return self.execute_with_retry(_create_package)
 
     def add_message(self, package_id: int, forwarded_from_id: int,
-                    forwarded_from_name: str, is_own_message: bool,
+                    forwarded_from_name: str, source_display: str,
+                    is_own_message: bool,
                     message_text: str, message_type: str, file_id: str = None):
+        """Добавить сообщение в пакет"""
+
         def _add_message():
             with self.conn.cursor() as cur:
                 cur.execute(
                     """INSERT INTO messages 
-                       (package_id, forwarded_from_id, forwarded_from_name, 
+                       (package_id, forwarded_from_id, forwarded_from_name, source_display,
                         is_own_message, message_text, message_type, file_id,
                         bot_received_time) 
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                    (package_id, forwarded_from_id, forwarded_from_name,
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (package_id, forwarded_from_id, forwarded_from_name, source_display,
                      is_own_message, message_text, message_type, file_id,
                      datetime.now())
                 )
+
         self.execute_with_retry(_add_message)
 
     def get_package_stats(self, user_id: int) -> dict:
@@ -109,6 +115,7 @@ class Database:
                     'own_messages': own_messages,
                     'foreign_messages': message_count - own_messages
                 }
+
         return self.execute_with_retry(_get_stats)
 
     def get_package_messages(self, package_id: int, user_db_id: int = None) -> list:
@@ -131,6 +138,7 @@ class Database:
                     (package_id,)
                 )
                 return cur.fetchall()
+
         return self.execute_with_retry(_get_messages)
 
     def get_package_info(self, package_id: int) -> dict:
@@ -158,6 +166,7 @@ class Database:
                     (package_id,)
                 )
                 return cur.fetchone()
+
         return self.execute_with_retry(_get_info)
 
     def get_package_participants(self, package_id: int) -> list:
@@ -167,7 +176,7 @@ class Database:
                     """SELECT DISTINCT 
                           CASE 
                             WHEN is_own_message THEN 'Вы' 
-                            ELSE forwarded_from_name 
+                            ELSE COALESCE(source_display, forwarded_from_name, 'Unknown')
                           END as participant
                        FROM messages 
                        WHERE package_id = %s
@@ -175,6 +184,7 @@ class Database:
                     (package_id,)
                 )
                 return [row[0] for row in cur.fetchall()]
+
         return self.execute_with_retry(_get_participants)
 
     def search_packages_by_user(self, telegram_id: int = None, username: str = None, limit: int = 20) -> list:
@@ -199,6 +209,7 @@ class Database:
                 params.append(limit)
                 cur.execute(query, params)
                 return cur.fetchall()
+
         return self.execute_with_retry(_search)
 
 
