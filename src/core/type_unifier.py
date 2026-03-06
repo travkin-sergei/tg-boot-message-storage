@@ -4,8 +4,9 @@
 """
 import json
 import re
+
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union, Tuple
+from typing import Dict, Any, List, Union, Tuple
 
 
 class SchemaComparator:

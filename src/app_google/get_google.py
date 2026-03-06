@@ -1,4 +1,4 @@
-#src/app_google/_get_google.py
+#src/app_google/get_google.py
 """
 Сервис для обработки Google Sheets.
 Зависимость: только src.config.logger
@@ -9,6 +9,7 @@ from io import BytesIO
 from typing import Any
 from openpyxl import load_workbook
 
+from src.app_google.config import APP_GOOGLE_FILE
 from src.config.logger import logger
 
 
@@ -22,7 +23,7 @@ class GoogleSheetProcessor:
 
     def __init__(self, timeout: int = 30):
         self.timeout = timeout
-        self._base_url = 'https://docs.google.com/spreadsheets/d/{file_code}/export?format=xlsx'
+        self._base_url = f'https://docs.google.com/spreadsheets/d/{APP_GOOGLE_FILE}/export?format=xlsx'
         self._cached_content: bytes | None = None
         self._cached_file_code: str | None = None
 
@@ -40,13 +41,13 @@ class GoogleSheetProcessor:
         """
         # Если файл уже загружен и code совпадает — используем кэш
         if self._cached_content is not None and self._cached_file_code == file_code:
-            logger.debug(f"♻️ Используется кэш для файла: {file_code}")
+            logger.debug(f"Используется кэш для файла: {file_code}")
             return True
 
         link = self._base_url.format(file_code=file_code.strip())
 
         try:
-            logger.info(f"📥 Загрузка файла: {file_code}")
+            logger.info(f"Загрузка файла: {file_code}")
 
             async with aiohttp.ClientSession() as session:
                 async with session.get(link, timeout=aiohttp.ClientTimeout(total=self.timeout)) as response:
@@ -64,10 +65,10 @@ class GoogleSheetProcessor:
             return True
 
         except aiohttp.ClientError as e:
-            logger.error(f"🌐 Ошибка HTTP: {e}")
+            logger.error(f"HTTP: {e}")
             return False
         except Exception as e:
-            logger.error(f"💥 Ошибка загрузки: {e}", exc_info=True)
+            logger.error(f"download: {e}", exc_info=True)
             return False
 
     def _parse_sheet_names_sync(self, content: bytes) -> list[str]:
