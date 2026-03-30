@@ -1,6 +1,8 @@
 """
 Приложение app_google: пайплайн обработки Google Sheets.
 """
+import asyncio
+
 import duckdb
 import pyarrow as pa
 
@@ -12,7 +14,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.exc import IntegrityError
 
 from src.app_google.config import APP_GOOGLE_FILE, COLUMN_MAPPING, SHEET_NAME
-from src.app_google.model import TaskList
+from src.app_google.models import TaskList
 from src.config.logger import logger
 from src.config.database import engine, async_session
 from src.app_google.get_google import GoogleSheetProcessor
@@ -216,3 +218,6 @@ async def main(file_code: Optional[str] = None,
     finally:
         processor.clear_cache()
         logger.debug("🧹 Кэш очищен")
+
+if __name__ == "__main__":
+    asyncio.run(main())

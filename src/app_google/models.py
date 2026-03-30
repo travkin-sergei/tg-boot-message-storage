@@ -65,7 +65,6 @@ class TaskList(Base):
     status: Mapped[str | None] = mapped_column(Text, comment='{"name":"Статус"}')
 
 
-# src/app_google/model.py (в конце файла)
 
 async def init_db_schema(shema):
     """Создаёт все таблицы из моделей, если их нет."""

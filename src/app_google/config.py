@@ -3,7 +3,6 @@
 Список констант приложения APP_GOOGLE
 """
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()

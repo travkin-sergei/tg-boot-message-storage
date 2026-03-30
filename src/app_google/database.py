@@ -11,7 +11,7 @@ from typing import Optional, Sequence, TypeVar
 from sqlalchemy import select, func, update, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.app_google.model import Base, TaskList
+from src.app_google.models import Base, TaskList
 from src.config.database import engine, async_session
 from src.config.logger import logger
 
@@ -66,20 +66,18 @@ class AppGoogleDB:
     # === CRUD операции для TaskList ===
     # -------------------------------------------------------------------------
 
-    async def save_task(
-            self,
-            number: Optional[str] = None,
-            date_comment: Optional[datetime] = None,
-            link_post: Optional[str] = None,
-            short_description: Optional[str] = None,
-            autor: Optional[str] = None,
-            subscribers: Optional[int] = None,
-            comment: Optional[str] = None,
-            corrections: Optional[str] = None,
-            responsible: Optional[str] = None,
-            status: Optional[str] = None,
-            commit: bool = True
-    ) -> Optional[TaskList]:
+    async def save_task(self,
+                        number: Optional[str] = None,
+                        date_comment: Optional[datetime] = None,
+                        link_post: Optional[str] = None,
+                        short_description: Optional[str] = None,
+                        autor: Optional[str] = None,
+                        subscribers: Optional[int] = None,
+                        comment: Optional[str] = None,
+                        corrections: Optional[str] = None,
+                        responsible: Optional[str] = None,
+                        status: Optional[str] = None,
+                        commit: bool = True) -> Optional[TaskList]:
         """
         Сохранить задачу через ORM.
 
@@ -114,11 +112,9 @@ class AppGoogleDB:
             logger.error(f"Ошибка сохранения задачи: {e}", exc_info=True)
             return None
 
-    async def save_tasks_batch(
-            self,
-            tasks: list[dict[str, any]],
-            commit: bool = True
-    ) -> tuple[int, int]:
+    async def save_tasks_batch(self,
+                               tasks: list[dict[str, any]],
+                               commit: bool = True) -> tuple[int, int]:
         """
         Пакетное сохранение задач (bulk insert).
 
@@ -155,14 +151,12 @@ class AppGoogleDB:
 
         return success_count, error_count
 
-    async def get_tasks(
-            self,
-            status_filter: Optional[str] = None,
-            date_from: Optional[datetime] = None,
-            date_to: Optional[datetime] = None,
-            limit: int = 100,
-            offset: int = 0
-    ) -> Sequence[TaskList]:
+    async def get_tasks(self,
+                        status_filter: Optional[str] = None,
+                        date_from: Optional[datetime] = None,
+                        date_to: Optional[datetime] = None,
+                        limit: int = 100,
+                        offset: int = 0) -> Sequence[TaskList]:
         """
         Получить задачи с фильтрацией.
         """
@@ -191,12 +185,10 @@ class AppGoogleDB:
             logger.error(f" Ошибка чтения задач: {e}", exc_info=True)
             return []
 
-    async def update_task_status(
-            self,
-            task_id: int,
-            new_status: str,
-            corrections: Optional[str] = None
-    ) -> bool:
+    async def update_task_status(self,
+                                 task_id: int,
+                                 new_status: str,
+                                 corrections: Optional[str] = None) -> bool:
         """
         Обновить статус задачи.
         """

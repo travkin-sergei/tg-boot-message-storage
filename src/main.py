@@ -4,7 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from src.app_google.model import init_db_schema
+from src.app_google.models import init_db_schema
 from src.app_google.api import router as app_google_router
 from src.config.logger import logger, config_logging
 from src.config.database import DBManager

@@ -29,6 +29,7 @@ class TaskFilter(BaseModel):
 
 class TaskResponse(BaseModel):
     """Ответ с данными задачи."""
+
     link_post: str
     number: Optional[str] = None
     date_comment: Optional[date] = None

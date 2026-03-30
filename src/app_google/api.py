@@ -14,7 +14,7 @@ from src.config.database import engine, async_session
 from src.config.other import API_TOKEN
 from src.app_google.config import APP_GOOGLE_FILE
 from src.app_google.schemas import SyncResponse, SyncRequest, StatsResponse, TaskResponse, TaskFilter
-from src.app_google.model import TaskList
+from src.app_google.models import TaskList
 from src.app_google.main import main as run_pipeline
 
 # === Настройки роутера ===
